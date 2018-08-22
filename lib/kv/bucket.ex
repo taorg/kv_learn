@@ -21,4 +21,27 @@ defmodule KV.Bucket do
   def put(bucket, key, value) do
     Agent.update(bucket, &Map.put(&1, key, value))
   end
+
+  @doc """
+  Deletes `key` from `bucket`.
+
+  Returns the current value of `key`, if `key` exists.
+  """
+  def delete(bucket, key) do
+    Agent.get_and_update(bucket, &Map.pop(&1, key))
+  end
+
+    @doc """
+  Deletes `key` from `bucket` but very slow.
+
+  Returns the current value of `key`, if `key` exists.
+  """
+  def delete_slow(bucket, key) do
+    Process.sleep(1000) # puts client to sleep
+    Agent.get_and_update(bucket, fn dict ->
+      Process.sleep(1000) # puts server to sleep
+      Map.pop(dict, key)
+    end)
+  end
+
 end
