@@ -42,7 +42,7 @@ defmodule Kv.Display.Comprehension do
   def set_pins(pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h) do
     start_link(1)
     Logger.info("put_pids:#{inspect(put_pids(:hola, %{bonita: 1}))}")
-    Logger.info("get_pids:#{inspect(take_pids(:hola))}")
+    Logger.info("get_pids:#{inspect(get_pids(:hola))}")
 
     input_pins = [pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h]
 
@@ -56,6 +56,8 @@ defmodule Kv.Display.Comprehension do
         {pin_code, input_pin}
       end
 
+    ### Save digit_pids into actor
+    put_pids(:digit_pids, digit_pids)
     Logger.info("digit_pids#{inspect(digit_pids)}")
     digit_pids
   end
@@ -73,7 +75,7 @@ defmodule Kv.Display.Comprehension do
   end
 
   @doc """
-     c "lib/kv/display/comprehensions.ex"
+    c "lib/kv/display/comprehensions.ex"
     alias Kv.Display.Comprehension
     digit_pids = Comprehension.set_pins("a", "b", "c", "d", "e", "f", "g", "h")
     Comprehension.write(digit_pids,0xFE,0)
@@ -86,11 +88,23 @@ defmodule Kv.Display.Comprehension do
     for n <- 0..7 do
       if 1 == digit_bits |> Enum.at(n) do
         pid = digit_pids |> Enum.at(n)
-        Logger.info("pid#{inspect(pid|>Kernel.elem(1))}==val #{inspect(val)}")
+        Logger.info("pid#{inspect(pid |> Kernel.elem(1))}==val #{inspect(val)}")
         # GPIO.write(pid|>Kernel.elem(1), val)
       end
     end
   end
 
-
+  @doc """
+    c "lib/kv/display/comprehensions.ex"
+    alias Kv.Display.Comprehension
+    digit_pids = Comprehension.set_pins("a", "b", "c", "d", "e", "f", "g", "h")
+    Comprehension.release()
+  """
+  def release() do
+    get_pids(:digit_pids)
+    |> Enum.each(fn digit_pid ->
+      Logger.info("pid#{inspect(digit_pid |> Kernel.elem(1))}}")
+      # GPIO.release(digit_pid)
+    end)
+  end
 end
