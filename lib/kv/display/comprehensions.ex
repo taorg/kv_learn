@@ -15,8 +15,10 @@ defmodule Kv.Display.Comprehension do
   nine = [1,1,1,1,0,1,1,0]
          [a,b,c,d,e,f,g,h]
   String.to_integer("FC", 16)|>Integer.digits(2)
+  c "lib/kv/display/comprehensions.ex"
   """
   require Logger
+  import Kv.PidServer
 
   # 0~9
   @digits_code %{
@@ -32,26 +34,29 @@ defmodule Kv.Display.Comprehension do
     nine: 0xF6
   }
   @pins_code [:a, :b, :c, :d, :e, :f, :g, :h]
+
   @doc """
-    alias Kv.Display.Comprehension
     Kv.Display.Comprehension.set_pins(0,1,2,3,4,5,6,7)
+    c "lib/kv/display/comprehensions.ex"
   """
   def set_pins(pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h) do
+    start_link(1)
+    Logger.info("put_pids:#{inspect(put_pids(:hola, %{bonita: 1}))}")
+    Logger.info("get_pids:#{inspect(take_pids(:hola))}")
+
     input_pins = [pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h]
-    digit_pids = %{}
 
     digit_pids =
       for n <- 0..7 do
         # input_pin = input_pins|>Enum.at(n)
         # {:ok, digit_pid} = GPIO.start_link(input_pin, :output)
-        # digit_pids|>Map.put(pin_code, digit_pid)
+        # {pin_code, digit_pid}
         input_pin = input_pins |> Enum.at(n)
         pin_code = @pins_code |> Enum.at(n)
-        # Logger.info("pin_code#{inspect(pin_code)}==>input_pin#{inspect(input_pin)}")
-        digit_pids |> Map.put(pin_code, input_pin)
+        {pin_code, input_pin}
       end
 
-    Logger.info("digit_pids:#{inspect(digit_pids)}")
+    Logger.info("digit_pids#{inspect(digit_pids)}")
     digit_pids
   end
 
@@ -68,20 +73,24 @@ defmodule Kv.Display.Comprehension do
   end
 
   @doc """
+     c "lib/kv/display/comprehensions.ex"
     alias Kv.Display.Comprehension
-    digit_pids = Comprehension.set_pins(0,1,2,3,4,5,6,7)
-    Comprehension.clear(digit_pids,0xFE)
+    digit_pids = Comprehension.set_pins("a", "b", "c", "d", "e", "f", "g", "h")
+    Comprehension.write(digit_pids,0xFE,0)
+    Comprehension.write(digit_pids,0x60,1)
+    Comprehension.write(digit_pids,0x60,0)
   """
-  def clear(digit_pids, digit) do
+  def write(digit_pids, digit, val) do
     digit_bits = Integer.digits(digit, 2)
-    pids_list = Map.to_list(digit_pids)
-    Logger.info("digit#{inspect(@digits_code.eight)}")
+
     for n <- 0..7 do
       if 1 == digit_bits |> Enum.at(n) do
-        pid = pids_list |> Enum.at(n)
-        Logger.info("pid#{inspect(pid)}")
-        # GPIO.write(pid, 0)
+        pid = digit_pids |> Enum.at(n)
+        Logger.info("pid#{inspect(pid|>Kernel.elem(1))}==val #{inspect(val)}")
+        # GPIO.write(pid|>Kernel.elem(1), val)
       end
     end
   end
+
+
 end
