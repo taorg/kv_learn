@@ -16,13 +16,13 @@ defmodule Kv.PidServer do
 
   defp map_get(map, key) do
     value = Map.get(map, key)
-    #Logger.debug(" Value: #{inspect(value)} from key: #{inspect(key)}")
+    # Logger.debug(" Value: #{inspect(value)} from key: #{inspect(key)}")
     value
   end
 
   defp map_put(map, key, value) do
     result = Map.put(map, key, value)
-    #Logger.debug(" Value: #{inspect(value)} added to key: #{inspect(key)}")
+    # Logger.debug(" Value: #{inspect(value)} added to key: #{inspect(key)}")
     result
   end
 end

@@ -78,18 +78,24 @@ defmodule Kv.Display.Comprehension do
     c "lib/kv/display/comprehensions.ex"
     alias Kv.Display.Comprehension
     digit_pids = Comprehension.set_pins("a", "b", "c", "d", "e", "f", "g", "h")
-    Comprehension.write(digit_pids,0xFE,0)
-    Comprehension.write(digit_pids,0x60,1)
-    Comprehension.write(digit_pids,0x60,0)
+    Comprehension.write(digit_pids,0xFE)
+    Comprehension.write(digit_pids,0x60)
+    Comprehension.write(digit_pids,0x60)
   """
-  def write(digit_pids, digit, val) do
+  def write(digit_pids, digit) do
     digit_bits = Integer.digits(digit, 2)
 
     for n <- 0..7 do
-      if 1 == digit_bits |> Enum.at(n) do
-        pid = digit_pids |> Enum.at(n)
-        Logger.info("pid#{inspect(pid |> Kernel.elem(1))}==val #{inspect(val)}")
-        # GPIO.write(pid|>Kernel.elem(1), val)
+      digit_bit = digit_bits |> Enum.at(n)
+      pid = digit_pids |> Enum.at(n) |> Kernel.elem(1)
+      Logger.info("pid = #{inspect(pid)}")
+
+      if 1 == digit_bit do
+        Logger.info("pid#{inspect(pid)} to 1")
+        # GPIO.write(pid, 1)
+      else
+        Logger.info("pid#{inspect(pid)} to 0")
+        # GPIO.write(pid, 0)
       end
     end
   end
