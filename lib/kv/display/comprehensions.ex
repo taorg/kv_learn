@@ -1,19 +1,20 @@
 defmodule Kv.Display.Comprehension do
   @moduledoc """
-         [a,b,c,d,e,f,g,h]
-  null = [0,0,0,0,0,0,0,0]
-  zero = [1,1,1,1,1,1,0,0]
-  one = [0,1,1,0,0,0,0,0]
-  two = [1,1,0,0,1,0,1,0]
+          [a,b,c,d,e,f,g,h]
+  null =  [0,0,0,0,0,0,0,0]
+  zero =  [1,1,1,1,1,1,0,0]
+  one =   [0,1,1,0,0,0,0,0]
+  two =   [1,1,0,0,1,0,1,0]
   three = [1,1,1,1,0,0,1,0]
-  four = [0,1,1,0,0,1,1,0]
-         [a,b,c,d,e,f,g,h]
-  five = [1,0,1,1,0,1,1,0]
-  six = [1,0,1,1,1,1,1,0]
+  four =  [0,1,1,0,0,1,1,0]
+          [a,b,c,d,e,f,g,h]
+  five =  [1,0,1,1,0,1,1,0]
+  six =   [1,0,1,1,1,1,1,0]
   seven = [1,1,1,0,0,0,0,0]
   eight = [1,1,1,1,1,1,1,0]
-  nine = [1,1,1,1,0,1,1,0]
-         [a,b,c,d,e,f,g,h]
+  nine =  [1,1,1,1,0,1,1,0]
+  A =     [1,1,1,0,1,1,1,0]
+          [a,b,c,d,e,f,g,h]
   String.to_integer("FC", 16)|>Integer.digits(2)
   c "lib/kv/display/comprehensions.ex"
   """
@@ -31,7 +32,8 @@ defmodule Kv.Display.Comprehension do
     six: 0xBE,
     seven: 0xE0,
     eight: 0xFE,
-    nine: 0xF6
+    nine: 0xF6,
+    A: 0x77
   }
   @pins_code [:a, :b, :c, :d, :e, :f, :g, :h]
 
@@ -41,8 +43,6 @@ defmodule Kv.Display.Comprehension do
   """
   def set_pins(pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h) do
     start_link(1)
-    Logger.info("put_pids:#{inspect(put_pids(:hola, %{bonita: 1}))}")
-    Logger.info("get_pids:#{inspect(get_pids(:hola))}")
 
     input_pins = [pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h]
 
