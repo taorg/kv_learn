@@ -42,7 +42,7 @@ defmodule Kv.Display.Comprehension do
     c "lib/kv/display/comprehensions.ex"
   """
   def set_pins(pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h) do
-    start_link(1)
+    start()
 
     input_pins = [pin_a, pin_b, pin_c, pin_d, pin_e, pin_f, pin_g, pin_h]
 
@@ -51,9 +51,9 @@ defmodule Kv.Display.Comprehension do
         # input_pin = input_pins|>Enum.at(n)
         # {:ok, digit_pid} = GPIO.start_link(input_pin, :output)
         # {pin_code, digit_pid}
-        input_pin = input_pins |> Enum.at(n)
+        digit_pid = input_pins |> Enum.at(n)
         pin_code = @pins_code |> Enum.at(n)
-        {pin_code, input_pin}
+        {pin_code, digit_pid}
       end
 
     ### Save digit_pids into actor
@@ -78,12 +78,10 @@ defmodule Kv.Display.Comprehension do
     c "lib/kv/display/comprehensions.ex"
     alias Kv.Display.Comprehension
     digit_pids = Comprehension.set_pins("a", "b", "c", "d", "e", "f", "g", "h")
-    Comprehension.write(digit_pids,0xFE)
-    Comprehension.write(digit_pids,0x60)
-    Comprehension.write(digit_pids,0x60)
+    Comprehension.write(digit_pids,:eight)
   """
   def write(digit_pids, digit) do
-    digit_bits = Integer.digits(digit, 2)
+    digit_bits = @digits_code[digit] |> Integer.digits(2)
 
     for n <- 0..7 do
       digit_bit = digit_bits |> Enum.at(n)

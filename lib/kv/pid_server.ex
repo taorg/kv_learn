@@ -2,6 +2,21 @@ defmodule Kv.PidServer do
   use Agent
   require Logger
 
+  def start() do
+    pid =
+      case start_link(1) do
+        {:ok, pid} ->
+          Logger.debug("Agent correctly STARTED")
+          pid
+
+        {:error, {:already_started, pid}} ->
+          Logger.debug("Agent ERROR already started")
+          pid
+      end
+
+    {:ok, pid}
+  end
+
   def start_link(_) do
     Agent.start_link(fn -> Map.new() end, name: __MODULE__)
   end
