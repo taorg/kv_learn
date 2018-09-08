@@ -88,7 +88,6 @@ defmodule Kv.Display.Comprehension do
     for n <- 0..7 do
       digit_bit = digit_bits |> Enum.at(n)
       pid = digit_pids |> Enum.at(n) |> Kernel.elem(1)
-      Logger.info("pid = #{inspect(pid)}")
 
       if 1 == digit_bit do
         Logger.info("pid#{inspect(pid)} to 1")
