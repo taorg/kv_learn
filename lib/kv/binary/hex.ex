@@ -2,7 +2,7 @@ defmodule KV.Hex do
 
   import Enum
   import KV.Math
-
+  require Logger
   # lookup table for hex values
   @lookup_table ~w{ 0 1 2 3 4 5 6 7 8 9 A B C D E F }
 
@@ -39,7 +39,8 @@ defmodule KV.Hex do
   def from_hex( value ) when is_bitstring( value ) do
     hex_list = String.split( value, ~r{} )
                 |> filter(fn x -> x != "" end)
-
+                
+    Logger.info("hex_list #{inspect(hex_list)}")
     from_hex( hex_list )
   end
 
