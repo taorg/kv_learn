@@ -27,9 +27,6 @@ defmodule KV.Chat.ServerSupervisor do
     end
   end
 
-  @spec account_process_rooms() :: [
-          {any(), :restarting | :undefined | pid(), :supervisor | :worker, any()}
-        ]
   def account_process_rooms, do: Supervisor.which_children(__MODULE__)
 
   def init([%{user: user, room: room} = map]) do
