@@ -31,10 +31,11 @@ defmodule KV.Chat.ServerSupervisor do
     Supervisor.which_children(__MODULE__)
     |> Enum.map(fn {_, room_proc_pid, _, _} ->
       Registry.keys(@chat_server_registry_name, room_proc_pid)
-      |> List.first
+      |> List.first()
     end)
-    |> Enum.sort
-end
+    |> Enum.sort()
+  end
+
   def account_process_rooms, do: Supervisor.which_children(__MODULE__)
 
   def init([%{user: user, room: room} = map]) do
@@ -42,7 +43,8 @@ end
       {Registry, keys: :unique, name: @chat_server_registry_name},
       worker(@dev_srv, [map], id: {user, room})
     ]
-    #supervise(children, strategy: :one_for_one)
+
+    # supervise(children, strategy: :one_for_one)
     Supervisor.init(children, strategy: :one_for_one)
   end
 end
