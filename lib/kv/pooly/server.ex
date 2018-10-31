@@ -31,15 +31,15 @@ defmodule Kv.Pooly.Server do
     init(pool_config, %State{sup: sup, monitors: monitors})
   end
 
-  def init([{:mfa, mfa}|rest], state) do
-    init(rest,  %{state | mfa: mfa})
+  def init([{:mfa, mfa} | rest], state) do
+    init(rest, %{state | mfa: mfa})
   end
 
-  def init([{:size, size}|rest], state) do
+  def init([{:size, size} | rest], state) do
     init(rest, %{state | size: size})
   end
 
-  def init([_|rest], state) do
+  def init([_ | rest], state) do
     init(rest, state)
   end
 
@@ -50,7 +50,7 @@ defmodule Kv.Pooly.Server do
 
   def handle_call(:checkout, {from_pid, _ref}, %{workers: workers, monitors: monitors} = state) do
     case workers do
-      [worker|rest] ->
+      [worker | rest] ->
         ref = Process.monitor(from_pid)
         true = :ets.insert(monitors, {worker, ref})
         {:reply, worker, %{state | workers: rest}}
@@ -64,13 +64,13 @@ defmodule Kv.Pooly.Server do
     {:reply, {length(workers), :ets.info(monitors, :size)}, state}
   end
 
-
   def handle_cast({:checkin, worker}, %{workers: workers, monitors: monitors} = state) do
     case :ets.lookup(monitors, worker) do
       [{pid, ref}] ->
         true = Process.demonitor(ref)
         true = :ets.delete(monitors, pid)
-        {:noreply, %{state | workers: [pid|workers]}}
+        {:noreply, %{state | workers: [pid | workers]}}
+
       [] ->
         {:noreply, state}
     end
@@ -95,7 +95,7 @@ defmodule Kv.Pooly.Server do
   end
 
   defp prepopulate(size, sup, workers) do
-    prepopulate(size-1, sup, [new_worker(sup) | workers])
+    prepopulate(size - 1, sup, [new_worker(sup) | workers])
   end
 
   defp new_worker(sup) do
@@ -107,5 +107,4 @@ defmodule Kv.Pooly.Server do
     opts = [restart: :temporary]
     supervisor(Pooly.WorkerSupervisor, [mfa], opts)
   end
-
 end

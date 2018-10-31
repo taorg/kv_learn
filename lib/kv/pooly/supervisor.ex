@@ -14,5 +14,4 @@ defmodule Kv.Pooly.Supervisor do
 
     supervise(children, opts)
   end
-
 end
